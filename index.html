@@ -3,185 +3,864 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Traductor Alemán B1 - Interactivo</title>
+
+    <title>Traductor Alemán B1</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="bg-slate-100 min-h-screen py-10 px-4">
 
-    <div class="max-w-3xl mx-auto bg-white shadow-xl rounded-2xl p-6 md:p-8">
-        
-        <!-- Cabecera -->
-        <header class="mb-6 border-b pb-4 flex justify-between items-center flex-wrap gap-2">
-            <div>
-                <h1 class="text-2xl font-bold text-slate-800">Traductor Instantáneo 🇩🇪 (Nivel B1)</h1>
-                <p class="text-sm text-slate-500">Traducción mejorada, voz y análisis gramatical.</p>
-            </div>
-            <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider">Sin Registro previo</span>
-        </header>
+<div class="max-w-3xl mx-auto bg-white shadow-xl rounded-2xl p-6 md:p-8">
 
-        <!-- Controles -->
-        <div class="space-y-4">
-            <div>
-                <label for="direccion" class="block text-sm font-medium text-slate-700 mb-1">Dirección:</label>
-                <select id="direccion" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                    <option value="es-de">Español ➔ Alemán</option>
-                    <option value="de-es">Alemán ➔ Español</option>
-                </select>
-            </div>
+    <header class="mb-6 border-b pb-4">
+        <h1 class="text-2xl font-bold text-slate-800">
+            Traductor Alemán 🇩🇪
+        </h1>
 
-            <div>
-                <div class="flex justify-between items-center mb-1">
-                    <label for="texto" class="block text-sm font-medium text-slate-700">Texto o frase:</label>
-                    <button type="button" onclick="iniciarVoz()" id="btnVoz" class="flex items-center gap-1.5 text-xs bg-rose-50 hover:bg-rose-100 text-rose-700 font-medium px-3 py-1.5 rounded-lg border border-rose-200 transition">
-                        🎙️ <span id="textoMic">Dictar por Voz</span>
-                    </button>
-                </div>
-                <textarea id="texto" rows="3" placeholder="Escribe o dicta tu frase aquí..." class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
-            </div>
+        <p class="text-sm text-slate-500">
+            Traducción · Pronunciación · Nivel B1
+        </p>
+    </header>
 
-            <button onclick="traducirConApi()" id="btnTraducir" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-lg transition shadow-md">
-                Traducir y Analizar (Nivel B1)
+
+    <!-- DIRECCIÓN -->
+
+    <div class="mb-4">
+
+        <label class="block text-sm font-medium text-slate-700 mb-1">
+            Dirección:
+        </label>
+
+        <select
+            id="direccion"
+            class="w-full px-3 py-2 border rounded-lg">
+
+            <option value="es-de">
+                Español → Alemán
+            </option>
+
+            <option value="de-es">
+                Alemán → Español
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <!-- TEXTO -->
+
+    <div class="mb-4">
+
+        <div class="flex justify-between items-center mb-1">
+
+            <label
+                for="texto"
+                class="text-sm font-medium text-slate-700">
+
+                Texto o frase:
+
+            </label>
+
+            <button
+                onclick="iniciarVoz()"
+                id="btnMicrofono"
+                class="bg-rose-50 text-rose-700 border border-rose-200 px-3 py-1.5 rounded-lg text-xs">
+
+                🎙️ Dictar
+
             </button>
+
         </div>
 
-        <!-- Indicador de Carga -->
-        <div id="loading" class="hidden mt-6 text-center text-slate-500 text-sm animate-pulse">
-            Traduciendo al instante...
+
+        <textarea
+            id="texto"
+            rows="4"
+            placeholder="Escribe cualquier palabra o frase..."
+            class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
+
+    </div>
+
+
+    <!-- TRADUCIR -->
+
+    <button
+        id="btnTraducir"
+        onclick="traducir()"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg">
+
+        Traducir
+
+    </button>
+
+
+    <!-- CARGANDO -->
+
+    <div
+        id="loading"
+        class="hidden text-center mt-5 text-slate-500">
+
+        Traduciendo...
+
+    </div>
+
+
+    <!-- RESULTADO -->
+
+    <div
+        id="resultado"
+        class="hidden mt-8 border-t pt-6">
+
+        <h2 class="text-sm font-bold text-slate-500 uppercase mb-2">
+            Traducción
+        </h2>
+
+
+        <div
+            id="traduccion"
+            class="text-xl font-semibold bg-slate-50 border rounded-xl p-4 mb-4">
         </div>
 
-        <!-- Resultados -->
-        <div id="resultadoContainer" class="mt-8 hidden space-y-4 border-t pt-6">
-            <div class="flex justify-between items-center">
-                <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider">Traducción:</h3>
-                <button onclick="reproducirAudio()" class="flex items-center gap-1.5 text-xs bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-medium px-3 py-1.5 rounded-lg border border-emerald-200 transition">
-                    🔊 Escuchar pronunciación
+
+        <!-- AUDIO -->
+
+        <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
+
+            <h2 class="font-bold text-emerald-800 mb-3">
+                🔊 Pronunciación
+            </h2>
+
+
+            <div class="flex gap-2 flex-wrap">
+
+                <button
+                    onclick="reproducirAudio()"
+                    class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg">
+
+                    ▶️ Reproducir
+
                 </button>
-            </div>
-            <div id="traduccionTexto" class="mt-1 text-xl font-semibold text-slate-900 bg-slate-50 p-4 rounded-xl border"></div>
 
-            <div>
-                <h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider">Orientación Gramatical B1:</h3>
-                <div id="descripcionTexto" class="mt-1 text-sm text-slate-700 bg-blue-50 p-4 rounded-xl border border-blue-100 leading-relaxed"></div>
+
+                <button
+                    onclick="detenerAudio()"
+                    class="bg-white border px-4 py-2 rounded-lg">
+
+                    ⏹️ Detener
+
+                </button>
+
             </div>
+
+
+            <div class="mt-3">
+
+                <label class="text-xs text-emerald-800">
+                    Velocidad:
+                </label>
+
+                <select
+                    id="velocidad"
+                    class="ml-2 px-2 py-1 border rounded">
+
+                    <option value="0.7">
+                        0.7x
+                    </option>
+
+                    <option value="0.8">
+                        0.8x
+                    </option>
+
+                    <option value="0.9" selected>
+                        0.9x
+                    </option>
+
+                    <option value="1">
+                        1.0x
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div
+                id="estadoAudio"
+                class="text-xs text-emerald-700 mt-3">
+
+                Listo para reproducir
+
+            </div>
+
+        </div>
+
+
+        <!-- GRAMÁTICA -->
+
+        <div class="mt-5">
+
+            <h2 class="text-sm font-bold text-slate-500 uppercase mb-2">
+                Orientación gramatical B1
+            </h2>
+
+            <div
+                id="gramatica"
+                class="bg-blue-50 border border-blue-100 rounded-xl p-4 text-sm text-slate-700 leading-relaxed">
+
+            </div>
+
         </div>
 
     </div>
 
-    <script>
-        // Reconocimiento de voz por el navegador
-        function iniciarVoz() {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) {
-                alert('Tu navegador no soporta reconocimiento de voz. Usa Google Chrome o Edge.');
-                return;
-            }
+</div>
 
-            const recognition = new SpeechRecognition();
-            const direccion = document.getElementById('direccion').value;
-            recognition.lang = direccion === 'es-de' ? 'es-ES' : 'de-DE';
-            
-            const btnMic = document.getElementById('textoMic');
-            btnMic.innerText = "Escuchando...";
-            recognition.start();
 
-            recognition.onresult = (event) => {
-                document.getElementById('texto').value = event.results[0][0].transcript;
-                btnMic.innerText = "Dictar por Voz";
-            };
-            recognition.onerror = () => { btnMic.innerText = "Dictar por Voz"; };
-            recognition.onspeechend = () => { recognition.stop(); btnMic.innerText = "Dictar por Voz"; };
+<script>
+
+/* =====================================================
+   VARIABLES
+===================================================== */
+
+let voces = [];
+let textoParaAudio = "";
+let idiomaAudio = "de-DE";
+
+
+/* =====================================================
+   CARGAR VOCES
+===================================================== */
+
+function cargarVoces() {
+
+    if (!("speechSynthesis" in window)) {
+        return;
+    }
+
+    voces = window.speechSynthesis.getVoices();
+
+    console.log("Voces disponibles:", voces);
+}
+
+
+cargarVoces();
+
+
+if ("speechSynthesis" in window) {
+
+    window.speechSynthesis.onvoiceschanged = function () {
+
+        cargarVoces();
+
+    };
+
+}
+
+
+/* =====================================================
+   BUSCAR UNA VOZ
+===================================================== */
+
+function buscarVoz(idioma) {
+
+    if (!voces.length) {
+        voces = window.speechSynthesis.getVoices();
+    }
+
+
+    /*
+       Primero buscamos exactamente:
+       de-DE o es-ES
+    */
+
+    let voz = voces.find(function(v) {
+
+        return v.lang.toLowerCase() ===
+               idioma.toLowerCase();
+
+    });
+
+
+    if (voz) {
+        return voz;
+    }
+
+
+    /*
+       Si no existe, buscamos simplemente:
+       de
+       o
+       es
+    */
+
+    const base =
+        idioma.substring(0, 2).toLowerCase();
+
+
+    voz = voces.find(function(v) {
+
+        return v.lang
+            .toLowerCase()
+            .startsWith(base);
+
+    });
+
+
+    return voz || null;
+}
+
+
+/* =====================================================
+   TRADUCIR
+===================================================== */
+
+async function traducir() {
+
+    const texto =
+        document
+        .getElementById("texto")
+        .value
+        .trim();
+
+
+    const direccion =
+        document
+        .getElementById("direccion")
+        .value;
+
+
+    if (!texto) {
+
+        alert(
+            "Escribe una palabra o frase."
+        );
+
+        return;
+    }
+
+
+    const loading =
+        document.getElementById("loading");
+
+
+    const resultado =
+        document.getElementById("resultado");
+
+
+    const boton =
+        document.getElementById("btnTraducir");
+
+
+    loading.classList.remove("hidden");
+
+    resultado.classList.add("hidden");
+
+    boton.disabled = true;
+
+
+    /*
+       Detener cualquier audio anterior
+    */
+
+    detenerAudio();
+
+
+    /*
+       Idiomas de traducción
+    */
+
+    const idiomas =
+        direccion === "es-de"
+        ? "es|de"
+        : "de|es";
+
+
+    /*
+       Idioma que debe utilizar el audio.
+    */
+
+    idiomaAudio =
+        direccion === "es-de"
+        ? "de-DE"
+        : "es-ES";
+
+
+    const url =
+        "https://api.mymemory.translated.net/get" +
+        "?q=" +
+        encodeURIComponent(texto) +
+        "&langpair=" +
+        idiomas;
+
+
+    try {
+
+        const respuesta =
+            await fetch(url);
+
+
+        if (!respuesta.ok) {
+
+            throw new Error(
+                "No se pudo conectar con el servicio de traducción."
+            );
+
         }
 
-        // Reproducir audio con la síntesis del navegador
-        function reproducirAudio() {
-            const texto = document.getElementById('traduccionTexto').innerText;
-            const direccion = document.getElementById('direccion').value;
-            const idioma = direccion === 'es-de' ? 'de-DE' : 'es-ES';
 
-            if (!texto) return;
-            const utterance = new SpeechSynthesisUtterance(texto);
-            utterance.lang = idioma;
-            utterance.rate = 0.9;
-            window.speechSynthesis.speak(utterance);
+        const datos =
+            await respuesta.json();
+
+
+        if (
+            !datos.responseData ||
+            !datos.responseData.translatedText
+        ) {
+
+            throw new Error(
+                "No se encontró una traducción."
+            );
+
         }
 
-        // Traducción utilizando diccionario rápido y API pública
-        async function traducirConApi() {
-            let textoOriginal = document.getElementById('texto').value.trim();
-            let textoLimpio = textoOriginal.toLowerCase().replace(/[¿?¡!.,]/g, '').trim();
-            const direccion = document.getElementById('direccion').value;
 
-            if (!textoOriginal) {
-                alert('Por favor escribe o dicta un texto.');
-                return;
+        const traduccion =
+            datos.responseData.translatedText;
+
+
+        /*
+           Guardamos exactamente el texto
+           que debe pronunciar el audio.
+        */
+
+        textoParaAudio =
+            traduccion;
+
+
+        document
+        .getElementById("traduccion")
+        .innerText =
+            traduccion;
+
+
+        /*
+           Análisis B1
+        */
+
+        document
+        .getElementById("gramatica")
+        .innerHTML = direccion === "es-de"
+
+        ? `
+            <strong>Consejo B1:</strong>
+
+            <ul class="list-disc ml-5 mt-2 space-y-1">
+
+                <li>
+                    En una oración principal,
+                    el verbo conjugado normalmente ocupa
+                    la segunda posición.
+                </li>
+
+                <li>
+                    En subordinadas con
+                    <em>weil</em>, <em>dass</em> o
+                    <em>obwohl</em>, el verbo suele ir
+                    al final.
+                </li>
+
+                <li>
+                    Presta atención a
+                    <strong>der, die, das</strong>.
+                </li>
+
+                <li>
+                    Revisa los casos:
+                    Nominativ, Akkusativ y Dativ.
+                </li>
+
+            </ul>
+        `
+
+        : `
+            <strong>Análisis B1:</strong>
+
+            <ul class="list-disc ml-5 mt-2 space-y-1">
+
+                <li>
+                    Comprueba la posición del verbo
+                    en la oración alemana.
+                </li>
+
+                <li>
+                    Identifica los conectores
+                    utilizados.
+                </li>
+
+                <li>
+                    Observa los casos:
+                    Nominativ, Akkusativ y Dativ.
+                </li>
+
+            </ul>
+        `;
+
+
+        resultado.classList.remove("hidden");
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Error al traducir:\n\n" +
+            error.message
+        );
+
+    } finally {
+
+        loading.classList.add("hidden");
+
+        boton.disabled = false;
+
+    }
+
+}
+
+
+/* =====================================================
+   REPRODUCIR AUDIO
+===================================================== */
+
+function reproducirAudio() {
+
+    if (!textoParaAudio) {
+
+        alert(
+            "Primero traduce una palabra o frase."
+        );
+
+        return;
+    }
+
+
+    if (!("speechSynthesis" in window)) {
+
+        alert(
+            "Tu navegador no permite reproducir voz."
+        );
+
+        return;
+    }
+
+
+    /*
+       MUY IMPORTANTE:
+       detener cualquier reproducción anterior.
+    */
+
+    window.speechSynthesis.cancel();
+
+
+    const velocidad =
+        parseFloat(
+            document
+            .getElementById("velocidad")
+            .value
+        );
+
+
+    const estado =
+        document.getElementById("estadoAudio");
+
+
+    /*
+       Crear el objeto de voz.
+    */
+
+    const mensaje =
+        new SpeechSynthesisUtterance(
+            textoParaAudio
+        );
+
+
+    /*
+       Idioma.
+    */
+
+    mensaje.lang =
+        idiomaAudio;
+
+
+    /*
+       Velocidad.
+    */
+
+    mensaje.rate =
+        velocidad;
+
+
+    /*
+       Volumen máximo.
+    */
+
+    mensaje.volume =
+        1;
+
+
+    /*
+       Tono normal.
+    */
+
+    mensaje.pitch =
+        1;
+
+
+    /*
+       Buscar una voz adecuada.
+    */
+
+    const voz =
+        buscarVoz(idiomaAudio);
+
+
+    if (voz) {
+
+        mensaje.voice =
+            voz;
+
+        estado.innerText =
+            "🔊 Reproduciendo con " +
+            voz.name;
+
+    } else {
+
+        estado.innerText =
+            "🔊 Reproduciendo...";
+
+    }
+
+
+    /*
+       Cuando comienza.
+    */
+
+    mensaje.onstart =
+        function() {
+
+            estado.innerText =
+                "🔊 Reproduciendo...";
+
+        };
+
+
+    /*
+       Cuando termina.
+    */
+
+    mensaje.onend =
+        function() {
+
+            estado.innerText =
+                "✓ Audio terminado";
+
+        };
+
+
+    /*
+       Si ocurre un error.
+    */
+
+    mensaje.onerror =
+        function(event) {
+
+            console.error(
+                "Error de audio:",
+                event
+            );
+
+
+            estado.innerText =
+                "⚠️ Error de audio";
+
+
+            alert(
+                "El navegador no pudo reproducir la voz. " +
+                "Comprueba el volumen y prueba con Chrome o Edge."
+            );
+
+        };
+
+
+    /*
+       REPRODUCIR
+    */
+
+    window.speechSynthesis.speak(
+        mensaje
+    );
+
+}
+
+
+/* =====================================================
+   DETENER AUDIO
+===================================================== */
+
+function detenerAudio() {
+
+    if ("speechSynthesis" in window) {
+
+        window.speechSynthesis.cancel();
+
+    }
+
+
+    const estado =
+        document.getElementById("estadoAudio");
+
+
+    if (estado) {
+
+        estado.innerText =
+            "Audio detenido";
+
+    }
+
+}
+
+
+/* =====================================================
+   DICTADO POR VOZ
+===================================================== */
+
+function iniciarVoz() {
+
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+
+    if (!SpeechRecognition) {
+
+        alert(
+            "El reconocimiento de voz no está disponible " +
+            "en este navegador. Prueba Chrome o Edge."
+        );
+
+        return;
+    }
+
+
+    const reconocimiento =
+        new SpeechRecognition();
+
+
+    const direccion =
+        document
+        .getElementById("direccion")
+        .value;
+
+
+    /*
+       Idioma del micrófono.
+    */
+
+    reconocimiento.lang =
+        direccion === "es-de"
+        ? "es-ES"
+        : "de-DE";
+
+
+    reconocimiento.continuous =
+        false;
+
+
+    reconocimiento.interimResults =
+        false;
+
+
+    const boton =
+        document
+        .getElementById("btnMicrofono");
+
+
+    boton.innerText =
+        "🎙️ Escuchando...";
+
+
+    reconocimiento.onresult =
+        function(event) {
+
+            const resultado =
+                event
+                .results[0][0]
+                .transcript;
+
+
+            document
+            .getElementById("texto")
+            .value =
+                resultado;
+
+
+            boton.innerText =
+                "🎙️ Dictar";
+
+        };
+
+
+    reconocimiento.onerror =
+        function(event) {
+
+            console.error(event);
+
+
+            boton.innerText =
+                "🎙️ Dictar";
+
+
+            if (
+                event.error === "not-allowed"
+            ) {
+
+                alert(
+                    "No hay permiso para utilizar el micrófono."
+                );
+
             }
 
-            const loading = document.getElementById('loading');
-            const resultadoContainer = document.getElementById('resultadoContainer');
-            
-            loading.classList.remove('hidden');
-            resultadoContainer.classList.add('hidden');
+        };
 
-            // Diccionario local para expresiones comunes
-            const diccionarioExacto = {
-                "buenos dias": "Guten Morgen",
-                "buenos días": "Guten Morgen",
-                "hola": "Hallo",
-                "como estas": "Wie geht es dir?",
-                "cómo estás": "Wie geht es dir?",
-                "buenas tardes": "Guten Tag",
-                "buenas noches": "Gute Nacht"
-            };
 
-            if (direccion === 'es-de' && diccionarioExacto[textoLimpio]) {
-                const traduccion = diccionarioExacto[textoLimpio];
-                document.getElementById('traduccionTexto').innerText = traduccion;
-                document.getElementById('descripcionTexto').innerHTML = `
-                    <strong>Análisis B1 sugerido:</strong><br>
-                    • Saludo oficial preciso en alemán. <em>Guten Morgen</em> se utiliza específicamente desde las primeras horas de la mañana hasta el mediodía.
-                `;
-                loading.classList.add('hidden');
-                resultadoContainer.classList.remove('hidden');
-                return;
-            }
+    reconocimiento.onend =
+        function() {
 
-            // Petición a la API pública de MyMemory
-            let langPair = direccion === 'es-de' ? 'es|de' : 'de|es';
-            const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(textoOriginal)}&langpair=${langPair}`;
+            boton.innerText =
+                "🎙️ Dictar";
 
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
+        };
 
-                if (data && data.responseData) {
-                    const traduccion = data.responseData.translatedText;
-                    
-                    document.getElementById('traduccionTexto').innerText = traduccion;
-                    
-                    if (direccion === 'es-de') {
-                        document.getElementById('descripcionTexto').innerHTML = `
-                            <strong>Análisis B1 sugerido:</strong><br>
-                            • Revisa la colocación del verbo principal (en oraciones principales va en segunda posición, y en subordinadas al final).<br>
-                            • Presta atención al género de los sustantivos (der/die/das) y los casos (Nominativo, Acusativo, Dativo).
-                        `;
-                    } else {
-                        document.getElementById('descripcionTexto').innerHTML = `
-                            <strong>Análisis B1 sugerido:</strong><br>
-                            • Traducción al español obtenida de manera directa.<br>
-                            • Identifica si el texto original contenía conectores intermedios frecuentes como <em>obwohl</em>, <em>deshalb</em> o <em>während</em>.
-                        `;
-                    }
 
-                    resultadoContainer.classList.remove('hidden');
-                } else {
-                    throw new Error('No se pudo obtener la traducción.');
-                }
-            } catch (error) {
-                alert('Ocurrió un error al traducir: ' + error.message);
-            } finally {
-                loading.classList.add('hidden');
-            }
-        }
-    </script>
+    try {
+
+        reconocimiento.start();
+
+    } catch (error) {
+
+        console.error(error);
+
+        boton.innerText =
+            "🎙️ Dictar";
+
+    }
+
+}
+
+</script>
+
 </body>
 </html>

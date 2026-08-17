@@ -154,7 +154,11 @@ function actualizarContador() {
 
 async function traducir() {
     const textoOriginal = document.getElementById("texto").value.trim();
-    const textoLimpio = textoOriginal.toLowerCase().replace(/[¿?¡!.,]/g, '').trim();
+    
+    // CORRECCIÓN: Se remueve .toLowerCase() para preservar las mayúsculas y minúsculas originales
+    const textoLimpio = textoOriginal.replace(/[¿?¡!.,]/g, '').trim();
+    const textoParaDiccionario = textoLimpio.toLowerCase(); // Para comparar de forma insensible solo en el diccionario local si se desea
+    
     const direccion = document.getElementById("direccion").value;
 
     if (!textoOriginal) {
@@ -172,7 +176,7 @@ async function traducir() {
 
     detenerAudio();
 
-    // Diccionario local estricto para evitar fallos comunes de la API
+    // Diccionario local estricto
     const diccionarioExacto = {
         "buenos dias": "Guten Morgen",
         "buenos días": "Guten Morgen",
@@ -183,8 +187,8 @@ async function traducir() {
         "cómo estás": "Wie geht es dir?"
     };
 
-    if (direccion === 'es-de' && diccionarioExacto[textoLimpio]) {
-        const traduccion = diccionarioExacto[textoLimpio];
+    if (direccion === 'es-de' && diccionarioExacto[textoParaDiccionario]) {
+        const traduccion = diccionarioExacto[textoParaDiccionario];
         textoParaAudio = traduccion;
         document.getElementById("traduccion").innerText = traduccion;
         document.getElementById("gramatica").innerHTML = `

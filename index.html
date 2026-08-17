@@ -155,9 +155,8 @@ function actualizarContador() {
 async function traducir() {
     const textoOriginal = document.getElementById("texto").value.trim();
     
-    // CORRECCIÓN: Se remueve .toLowerCase() para preservar las mayúsculas y minúsculas originales
     const textoLimpio = textoOriginal.replace(/[¿?¡!.,]/g, '').trim();
-    const textoParaDiccionario = textoLimpio.toLowerCase(); // Para comparar de forma insensible solo en el diccionario local si se desea
+    const textoParaDiccionario = textoLimpio.toLowerCase();
     
     const direccion = document.getElementById("direccion").value;
 
@@ -175,6 +174,25 @@ async function traducir() {
     boton.disabled = true;
 
     detenerAudio();
+
+    // 1. Sistema de caché local (optimización y ahorro)
+    const cacheKey = `traduccion_${direccion}_${textoOriginal}`;
+    const traduccionGuardada = localStorage.getItem(cacheKey);
+
+    if (traduccionGuardada) {
+        const traduccion = traduccionGuardada;
+        textoParaAudio = traduccion;
+        document.getElementById("traduccion").innerText = traduccion;
+        document.getElementById("gramatica").innerHTML = `
+            <strong class="text-blue-900 block mb-1">💡 Análisis B1 (Caché local):</strong>
+            <p>Traducción recuperada instantáneamente sin consumir solicitudes adicionales.</p>
+        `;
+        loading.classList.add("hidden");
+        resultado.classList.remove("hidden");
+        boton.disabled = false;
+        agregarAlHistorial(textoOriginal, traduccion);
+        return;
+    }
 
     // Diccionario local estricto
     const diccionarioExacto = {
@@ -195,6 +213,7 @@ async function traducir() {
             <strong class="text-blue-900 block mb-1">💡 Análisis B1 sugerido:</strong>
             <p>Expresión cotidiana exacta corregida localmente para garantizar precisión absoluta en alemán.</p>
         `;
+        localStorage.setItem(cacheKey, traduccion);
         loading.classList.add("hidden");
         resultado.classList.remove("hidden");
         boton.disabled = false;
@@ -202,22 +221,27 @@ async function traducir() {
         return;
     }
 
-    const idiomas = direccion === "es-de" ? "es|de" : "de|es";
+    // 2. Uso de Google Translate sin API Key (ilimitado y sin registro)
+    const langFrom = direccion === "es-de" ? "es" : "de";
+    const langTo = direccion === "es-de" ? "de" : "es";
     idiomaAudio = direccion === "es-de" ? "de-DE" : "es-ES";
 
-    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(textoOriginal)}&langpair=${idiomas}`;
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${langFrom}&tl=${langTo}&dt=t&q=${encodeURIComponent(textoOriginal)}`;
 
     try {
         const respuesta = await fetch(url);
         if (!respuesta.ok) throw new Error("No se pudo conectar con el servicio de traducción.");
 
         const datos = await respuesta.json();
-        if (!datos.responseData || !datos.responseData.translatedText) {
+        if (!datos || !datos[0]) {
             throw new Error("No se encontró una traducción válida.");
         }
 
-        const traduccion = datos.responseData.translatedText;
+        const traduccion = datos[0].map(segmento => segmento[0]).join('');
         textoParaAudio = traduccion;
+
+        // Guardamos en caché local para futuras peticiones idénticas
+        localStorage.setItem(cacheKey, traduccion);
 
         document.getElementById("traduccion").innerText = traduccion;
 

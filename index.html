@@ -3,66 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Traductor Alemán B1 - Pro</title>
+    <title>Traductor Alemán Suizo B1 - Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gradient-to-br from-slate-100 to-slate-200 min-h-screen py-10 px-4 text-slate-800">
 
 <div class="max-w-3xl mx-auto bg-white shadow-2xl rounded-3xl p-6 md:p-10 border border-slate-100">
 
-    <!-- Cabecera -->
     <header class="mb-8 border-b pb-4 flex justify-between items-center flex-wrap gap-4">
         <div>
             <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-                Traductor Alemán 🇩🇪 <span class="text-xs bg-blue-100 text-blue-800 font-semibold px-2.5 py-1 rounded-full uppercase">Nivel B1</span>
+                Traductor Alemán Suizo 🇨🇭 <span class="text-xs bg-blue-100 text-blue-800 font-semibold px-2.5 py-1 rounded-full uppercase">Nivel B1</span>
             </h1>
             <p class="text-sm text-slate-500 mt-1">
-                Traducción inteligente · Pronunciación avanzada · Análisis gramatical
+                Basado en alemán estándar · Estilo suizo aproximado · Lectura en alfabeto español
             </p>
         </div>
     </header>
 
-    <!-- Dirección -->
     <div class="mb-5">
         <label for="direccion" class="block text-sm font-semibold text-slate-700 mb-2">
             Dirección de traducción:
         </label>
         <select id="direccion" class="w-full px-4 py-2.5 border border-slate-300 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none transition">
-            <option value="es-de">Español ➔ Alemán</option>
-            <option value="de-es">Alemán ➔ Español</option>
+            <option value="es-de">Español ➔ Alemán Suizo (estilo aproximado)</option>
+            <option value="de-es">Alemán Suizo ➔ Español</option>
         </select>
     </div>
 
-    <!-- Texto de entrada -->
     <div class="mb-5">
         <div class="flex justify-between items-center mb-2">
             <label for="texto" class="text-sm font-semibold text-slate-700">
                 Texto o frase:
             </label>
-            <button onclick="iniciarVoz()" id="btnMicrofono" class="flex items-center gap-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-3 py-1.5 rounded-xl text-xs font-medium transition shadow-sm">
+            <button onclick="iniciarVoz()" id="btnMicrofono" aria-label="Dictar por voz" class="flex items-center gap-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 px-3 py-1.5 rounded-xl text-xs font-medium transition shadow-sm">
                 🎙️ Dictar por voz
             </button>
         </div>
         <div class="relative">
-            <textarea id="texto" rows="4" maxlength="300" placeholder="Escribe o dicta cualquier palabra o frase..." oninput="actualizarContador()" class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none transition text-sm"></textarea>
+            <textarea id="texto" rows="4" maxlength="300" autocomplete="off" placeholder="Escribe o dicta cualquier palabra o frase..." oninput="actualizarContador()" class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none transition text-sm"></textarea>
             <span id="contadorCaracteres" class="absolute bottom-3 right-3 text-xs text-slate-400">0/300</span>
         </div>
     </div>
 
-    <!-- Botón Traducir -->
     <button id="btnTraducir" onclick="traducir()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-xl transition shadow-lg shadow-blue-500/30 flex justify-center items-center gap-2">
         <span>Traducir y Analizar</span>
     </button>
 
-    <!-- Cargando -->
     <div id="loading" class="hidden text-center my-6 text-slate-500 animate-pulse font-medium text-sm">
         Traduciendo al instante...
     </div>
 
-    <!-- Resultado -->
     <div id="resultado" class="hidden mt-8 border-t pt-6 space-y-6">
-        
-        <!-- Bloque Traducción -->
+
         <div>
             <div class="flex justify-between items-center mb-2">
                 <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider">
@@ -73,9 +66,9 @@
                 </button>
             </div>
             <div id="traduccion" class="text-xl font-bold text-slate-900 bg-slate-50 border border-slate-200 rounded-2xl p-4 shadow-inner"></div>
+            <div id="notaSuiza" class="text-sm text-amber-600 mt-2 px-1"></div>
         </div>
 
-        <!-- Bloque Audio / Pronunciación -->
         <div class="bg-emerald-50/70 border border-emerald-200 rounded-2xl p-5 shadow-sm">
             <h2 class="font-bold text-emerald-900 mb-3 flex items-center gap-2 text-sm">
                 🔊 Pronunciación Interactiva
@@ -91,7 +84,7 @@
 
                 <div class="ml-auto flex items-center gap-2">
                     <label class="text-xs font-semibold text-emerald-800">Velocidad:</label>
-                    <select id="velocidad" class="px-2.5 py-1.5 border border-emerald-300 rounded-xl text-xs bg-white text-emerald-900 font-medium focus:outline-none">
+                    <select id="velocidad" aria-label="Velocidad de audio" class="px-2.5 py-1.5 border border-emerald-300 rounded-xl text-xs bg-white text-emerald-900 font-medium focus:outline-none">
                         <option value="0.7">0.7x (Lenta)</option>
                         <option value="0.8">0.8x</option>
                         <option value="0.9" selected>0.9x (Normal)</option>
@@ -105,7 +98,6 @@
             </div>
         </div>
 
-        <!-- Bloque Gramática B1 -->
         <div>
             <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">
                 Orientación gramatical B1
@@ -115,7 +107,6 @@
 
     </div>
 
-    <!-- Historial de Traducciones Recientes -->
     <div id="historialContainer" class="hidden mt-10 pt-6 border-t border-slate-200">
         <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Historial reciente:</h3>
         <div id="listaHistorial" class="space-y-2"></div>
@@ -129,11 +120,64 @@ let textoParaAudio = "";
 let idiomaAudio = "de-DE";
 let historial = [];
 
+/* ============================================================
+   ALEMÁN → ALFABETO ESPAÑOL (transliteración aproximada)
+   Reglas básicas para que el usuario hispanohablante lea alemán.
+   ============================================================ */
+function transliterarAleman(texto) {
+    if (!texto) return "";
+    let s = texto;
+    // Grupos más largos primero
+    s = s.replace(/sch/g, 'sh');
+    s = s.replace(/ch/g, 'j');
+    s = s.replace(/ei/g, 'ai');
+    s = s.replace(/eu/g, 'oi');
+    s = s.replace(/äu/g, 'oi');
+    s = s.replace(/ie/g, 'ii');
+    s = s.replace(/ß/g, 'ss');
+    s = s.replace(/ü/g, 'u');
+    s = s.replace(/ö/g, 'o');
+    s = s.replace(/ä/g, 'e');
+    s = s.replace(/v/g, 'f');
+    s = s.replace(/z/g, 'ts');
+    s = s.replace(/w/g, 'v');
+    // al final de palabra: b → p, d → t, g → k (simplificado)
+    s = s.replace(/b\b/g, 'p');
+    s = s.replace(/d\b/g, 't');
+    s = s.replace(/g\b/g, 'k');
+    return s;
+}
+
+/* ============================================================
+   ALEMÁN ESTÁNDAR → ESTILO SUIZO APROXIMADO
+   Solo sustituciones simples y visibles.
+   ============================================================ */
+function suizificarAleman(texto) {
+    if (!texto) return "";
+    let s = texto;
+    s = s.replace(/ß/g, 'ss');
+    s = s.replace(/\bGrüß Gott\b/gi, 'Grüezi');
+    s = s.replace(/\bGuten Tag\b/gi, 'Grüezi');
+    s = s.replace(/\bGuten Morgen\b/gi, 'Guete Morge');
+    s = s.replace(/\bGuten Abend\b/gi, 'Guete Abig');
+    s = s.replace(/\bAuf Wiedersehen\b/gi, 'Uf Wiederluege');
+    s = s.replace(/\bTschüss\b/gi, 'Tschüss');
+    s = s.replace(/\bDanke\b/gi, 'Merci');
+    s = s.replace(/\bVielen Dank\b/gi, 'Merci vilmal');
+    s = s.replace(/\bIch\b/g, 'Ich');
+    s = s.replace(/\bhaben\b/gi, 'haa');
+    s = s.replace(/\bsein\b/gi, 'sii');
+    return s;
+}
+
+function contieneAleman(texto) {
+    return /[äöüß]/i.test(texto) || /\b(ich|du|er|sie|wir|ihr|nicht|und|ist|das|der|die)\b/i.test(texto);
+}
+
 function cargarVoces() {
     if (!("speechSynthesis" in window)) return;
     voces = window.speechSynthesis.getVoices();
 }
-
 cargarVoces();
 if ("speechSynthesis" in window) {
     window.speechSynthesis.onvoiceschanged = cargarVoces;
@@ -154,10 +198,6 @@ function actualizarContador() {
 
 async function traducir() {
     const textoOriginal = document.getElementById("texto").value.trim();
-    
-    const textoLimpio = textoOriginal.replace(/[¿?¡!.,]/g, '').trim();
-    const textoParaDiccionario = textoLimpio.toLowerCase();
-    
     const direccion = document.getElementById("direccion").value;
 
     if (!textoOriginal) {
@@ -172,99 +212,34 @@ async function traducir() {
     loading.classList.remove("hidden");
     resultado.classList.add("hidden");
     boton.disabled = true;
-
     detenerAudio();
 
-    // 1. Sistema de caché local (optimización y ahorro)
-    const cacheKey = `traduccion_${direccion}_${textoOriginal}`;
-    const traduccionGuardada = localStorage.getItem(cacheKey);
-
-    if (traduccionGuardada) {
-        const traduccion = traduccionGuardada;
-        textoParaAudio = traduccion;
-        document.getElementById("traduccion").innerText = traduccion;
-        document.getElementById("gramatica").innerHTML = `
-            <strong class="text-blue-900 block mb-1">💡 Análisis B1 (Caché local):</strong>
-            <p>Traducción recuperada instantáneamente sin consumir solicitudes adicionales.</p>
-        `;
-        loading.classList.add("hidden");
-        resultado.classList.remove("hidden");
-        boton.disabled = false;
-        agregarAlHistorial(textoOriginal, traduccion);
-        return;
-    }
-
-    // Diccionario local estricto
-    const diccionarioExacto = {
-        "buenos dias": "Guten Morgen",
-        "buenos días": "Guten Morgen",
-        "buenas tardes": "Guten Tag",
-        "buenas noches": "Gute Nacht",
-        "hola": "Hallo",
-        "como estas": "Wie geht es dir?",
-        "cómo estás": "Wie geht es dir?"
-    };
-
-    if (direccion === 'es-de' && diccionarioExacto[textoParaDiccionario]) {
-        const traduccion = diccionarioExacto[textoParaDiccionario];
-        textoParaAudio = traduccion;
-        document.getElementById("traduccion").innerText = traduccion;
-        document.getElementById("gramatica").innerHTML = `
-            <strong class="text-blue-900 block mb-1">💡 Análisis B1 sugerido:</strong>
-            <p>Expresión cotidiana exacta corregida localmente para garantizar precisión absoluta en alemán.</p>
-        `;
-        localStorage.setItem(cacheKey, traduccion);
-        loading.classList.add("hidden");
-        resultado.classList.remove("hidden");
-        boton.disabled = false;
-        agregarAlHistorial(textoOriginal, traduccion);
-        return;
-    }
-
-    // 2. Uso de Google Translate sin API Key (ilimitado y sin registro)
-    const langFrom = direccion === "es-de" ? "es" : "de";
-    const langTo = direccion === "es-de" ? "de" : "es";
     idiomaAudio = direccion === "es-de" ? "de-DE" : "es-ES";
 
+    const cacheKey = `traduccion_ch_${direccion}_${textoOriginal}`;
+    const guardada = localStorage.getItem(cacheKey);
+    if (guardada) {
+        mostrarResultado(guardada, direccion, textoOriginal, true);
+        loading.classList.add("hidden");
+        resultado.classList.remove("hidden");
+        boton.disabled = false;
+        return;
+    }
+
+    const langFrom = direccion === "es-de" ? "es" : "de";
+    const langTo = direccion === "es-de" ? "de" : "es";
     const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${langFrom}&tl=${langTo}&dt=t&q=${encodeURIComponent(textoOriginal)}`;
 
     try {
         const respuesta = await fetch(url);
         if (!respuesta.ok) throw new Error("No se pudo conectar con el servicio de traducción.");
-
         const datos = await respuesta.json();
-        if (!datos || !datos[0]) {
-            throw new Error("No se encontró una traducción válida.");
-        }
+        if (!datos || !datos[0]) throw new Error("No se encontró una traducción válida.");
 
-        const traduccion = datos[0].map(segmento => segmento[0]).join('');
-        textoParaAudio = traduccion;
-
-        // Guardamos en caché local para futuras peticiones idénticas
+        let traduccion = datos[0].map(seg => seg[0]).join('');
         localStorage.setItem(cacheKey, traduccion);
-
-        document.getElementById("traduccion").innerText = traduccion;
-
-        document.getElementById("gramatica").innerHTML = direccion === "es-de"
-            ? `
-                <strong class="text-blue-900 block mb-1">💡 Consejos clave para nivel B1:</strong>
-                <ul class="list-disc ml-5 space-y-1">
-                    <li>El verbo conjugado en oración principal va siempre en <strong>segunda posición</strong>.</li>
-                    <li>En oraciones subordinadas (ej. con <em>weil</em>, <em>dass</em>), el verbo pasa al <strong>final</strong>.</li>
-                    <li>Verifica los géneros (<strong>der, die, das</strong>) y la declinación de los casos (Nominativ, Akkusativ, Dativ).</li>
-                </ul>
-            `
-            : `
-                <strong class="text-blue-900 block mb-1">💡 Consejos clave para nivel B1:</strong>
-                <ul class="list-disc ml-5 space-y-1">
-                    <li>Analiza la estructura original en alemán para identificar la colocación del verbo.</li>
-                    <li>Presta atención a conectores frecuentes como <em>obwohl</em>, <em>deshalb</em> o <em>während</em>.</li>
-                    <li>Revisa los casos alemanes involucrados en el origen de la frase.</li>
-                </ul>
-            `;
-
+        mostrarResultado(traduccion, direccion, textoOriginal, false);
         resultado.classList.remove("hidden");
-        agregarAlHistorial(textoOriginal, traduccion);
 
     } catch (error) {
         console.error(error);
@@ -275,38 +250,59 @@ async function traducir() {
     }
 }
 
+function mostrarResultado(traduccionReal, direccion, textoOriginal, desdeCache) {
+    let textoMostrado = traduccionReal;
+    let notaSuiza = "";
+
+    if (direccion === "es-de") {
+        // Aplicar estilo suizo aproximado
+        const suizo = suizificarAleman(traduccionReal);
+        notaSuiza = `Alemán estándar: ${traduccionReal}`;
+        textoMostrado = suizo;
+        textoParaAudio = suizo;
+    } else {
+        textoParaAudio = traduccionReal;
+    }
+
+    document.getElementById("traduccion").innerText = textoMostrado;
+    document.getElementById("notaSuiza").innerText = notaSuiza;
+
+    const gram = direccion === "es-de"
+        ? `
+            <strong class="text-blue-900 block mb-1">💡 Consejos B1 (ES ➔ Alemán Suizo):</strong>
+            <ul class="list-disc ml-5 space-y-1">
+                <li>El alemán suizo <strong>no tiene pretérito</strong>: usa el perfecto para el pasado. <em>Ich ha gsi</em> (he estado).</li>
+                <li>El <strong>genitivo casi no existe</strong>: se usa dativo + posesivo. <em>em Vater sis Huus</em> (la casa del padre).</li>
+                <li>Las relativas usan <strong>wo</strong>: <em>Ds Bispil, wo si schrybt</em> (el ejemplo que ella escribe).</li>
+                <li>El acento cae <strong>en la primera sílaba</strong> con más frecuencia que en alemán estándar.</li>
+            </ul>
+        `
+        : `
+            <strong class="text-blue-900 block mb-1">💡 Consejos B1 (Alemán Suizo ➔ Español):</strong>
+            <ul class="list-disc ml-5 space-y-1">
+                <li>Si ves <strong>wo</strong> en una relativa, tradúcelo como <em>que</em>: <em>ds Huus, wo...</em> (la casa que...).</li>
+                <li>Si no hay pretérito, el <strong>perfecto</strong> hace las veces de pasado: <em>ich ha ggesse</em> (comí / he comido).</li>
+                <li>Palabras suizas frecuentes: <em>Grüezi</em> (hola), <em>Merci</em> (gracias), <em>Uf Wiederluege</em> (adiós).</li>
+            </ul>
+        `;
+    document.getElementById("gramatica").innerHTML = gram;
+
+    agregarAlHistorial(textoOriginal, textoMostrado);
+}
+
 function reproducirAudio() {
-    if (!textoParaAudio) {
-        alert("Primero realiza una traducción.");
-        return;
-    }
-    if (!("speechSynthesis" in window)) {
-        alert("Tu navegador no soporta síntesis de voz.");
-        return;
-    }
-
+    if (!textoParaAudio) { alert("Primero realiza una traducción."); return; }
+    if (!("speechSynthesis" in window)) { alert("Tu navegador no soporta síntesis de voz."); return; }
     window.speechSynthesis.cancel();
-
     const velocidad = parseFloat(document.getElementById("velocidad").value);
     const estado = document.getElementById("estadoAudio");
     const mensaje = new SpeechSynthesisUtterance(textoParaAudio);
-
     mensaje.lang = idiomaAudio;
     mensaje.rate = velocidad;
-    mensaje.volume = 1;
-    mensaje.pitch = 1;
-
     const voz = buscarVoz(idiomaAudio);
-    if (voz) {
-        mensaje.voice = voz;
-        estado.innerText = `🔊 Reproduciendo con voz nativa (${voz.name})`;
-    } else {
-        estado.innerText = "🔊 Reproduciendo audio...";
-    }
-
-    mensaje.onend = () => { estado.innerText = "✓ Audio finalizado con éxito"; };
-    mensaje.onerror = () => { estado.innerText = "⚠️ Error al reproducir audio"; };
-
+    if (voz) { mensaje.voice = voz; estado.innerText = `🔊 Reproduciendo (${voz.name})`; }
+    else { estado.innerText = "🔊 Reproduciendo audio..."; }
+    mensaje.onend = () => { estado.innerText = "✓ Audio finalizado"; };
     window.speechSynthesis.speak(mensaje);
 }
 
@@ -318,69 +314,43 @@ function detenerAudio() {
 
 function copiarTraduccion() {
     const texto = document.getElementById("traduccion").innerText;
-    navigator.clipboard.writeText(texto).then(() => {
-        alert("¡Traducción copiada al portapapeles!");
-    });
+    navigator.clipboard.writeText(texto).then(() => alert("¡Traducción copiada!"));
 }
 
 function agregarAlHistorial(orig, trad) {
     historial.unshift({ orig, trad });
     if (historial.length > 3) historial.pop();
-
-    const contenedor = document.getElementById("historialContainer");
     const lista = document.getElementById("listaHistorial");
     lista.innerHTML = "";
-
     historial.forEach(item => {
         const div = document.createElement("div");
         div.className = "text-xs bg-slate-50 border border-slate-200 p-2.5 rounded-xl flex justify-between items-center";
         div.innerHTML = `<span class="truncate max-w-[180px] font-medium"><strong>${item.orig}</strong></span> <span class="text-slate-400">➔</span> <span class="truncate max-w-[180px] text-blue-700 font-semibold">${item.trad}</span>`;
         lista.appendChild(div);
     });
-
-    contenedor.classList.remove("hidden");
+    document.getElementById("historialContainer").classList.remove("hidden");
 }
 
 function iniciarVoz() {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-        alert("El reconocimiento de voz no está disponible en este navegador. Utiliza Google Chrome o Microsoft Edge.");
-        return;
-    }
-
-    const reconocimiento = new SpeechRecognition();
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) { alert("Reconocimiento de voz no disponible. Usa Chrome o Edge."); return; }
+    const rec = new SR();
     const direccion = document.getElementById("direccion").value;
-    reconocimiento.lang = direccion === "es-de" ? "es-ES" : "de-DE";
-    reconocimiento.continuous = false;
-    reconocimiento.interimResults = false;
-
+    rec.lang = direccion === "es-de" ? "es-ES" : "de-DE";
+    rec.continuous = false;
+    rec.interimResults = false;
     const boton = document.getElementById("btnMicrofono");
     boton.innerText = "🎙️ Escuchando...";
     boton.classList.add("bg-rose-100");
-
-    reconocimiento.onresult = (event) => {
-        document.getElementById("texto").value = event.results[0][0].transcript;
+    rec.onresult = (e) => {
+        document.getElementById("texto").value = e.results[0][0].transcript;
         actualizarContador();
         boton.innerText = "🎙️ Dictar por voz";
         boton.classList.remove("bg-rose-100");
     };
-
-    reconocimiento.onerror = () => {
-        boton.innerText = "🎙️ Dictar por voz";
-        boton.classList.remove("bg-rose-100");
-    };
-
-    reconocimiento.onend = () => {
-        boton.innerText = "🎙️ Dictar por voz";
-        boton.classList.remove("bg-rose-100");
-    };
-
-    try {
-        reconocimiento.start();
-    } catch (e) {
-        boton.innerText = "🎙️ Dictar por voz";
-        boton.classList.remove("bg-rose-100");
-    }
+    rec.onerror = () => { boton.innerText = "🎙️ Dictar por voz"; boton.classList.remove("bg-rose-100"); };
+    rec.onend = () => { boton.innerText = "🎙️ Dictar por voz"; boton.classList.remove("bg-rose-100"); };
+    try { rec.start(); } catch(e) { boton.innerText = "🎙️ Dictar por voz"; boton.classList.remove("bg-rose-100"); }
 }
 </script>
 
